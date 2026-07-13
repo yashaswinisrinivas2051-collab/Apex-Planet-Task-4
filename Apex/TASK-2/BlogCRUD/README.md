@@ -1,5 +1,25 @@
 # Blog Management System (BlogCRUD)
 
+<div align="center">
+
+![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-5.7%2B-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+
+[![Version](https://img.shields.io/badge/Version-2.0.0-10b981?style=for-the-badge)]()
+[![Security](https://img.shields.io/badge/Security-Enhanced-22c55e?style=for-the-badge)]()
+[![CSRF](https://img.shields.io/badge/CSRF-Protected-6366f1?style=for-the-badge)]()
+[![SQL Injection](https://img.shields.io/badge/SQL_Injection-Prevented-ef4444?style=for-the-badge)]()
+[![XSS](https://img.shields.io/badge/XSS-Prevented-f97316?style=for-the-badge)]()
+[![RBAC](https://img.shields.io/badge/RBAC-Admin%2FEditor-8b5cf6?style=for-the-badge)]()
+
+[![License](https://img.shields.io/badge/License-MIT-10b981?style=flat-square)]()
+[![PRs](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square)]()
+[![Maintenance](https://img.shields.io/badge/Maintained-Yes-green?style=flat-square)]()
+
+</div>
+
 A modern, production-ready blog management system built with **PHP**, **MySQL**, **Bootstrap 5**, and **JavaScript**. This application provides complete CRUD functionality with secure user authentication and enterprise-grade security enhancements.
 
 ---
