@@ -1,19 +1,19 @@
 /**
- * Blog Management System - Security Enhanced JavaScript
+ * Blog Management System - Enhanced JavaScript (Task 5 Final)
  * 
  * Features:
  * - Client-side form validation with real-time feedback
- * - Email format validation
- * - Password strength indicator
- * - Password match validation
- * - Bootstrap 5 form validation enhancement
+ * - Password strength indicator & match validation
+ * - Loading spinner indicators on form submissions
+ * - Bootstrap 5 toast notification system
  * - Auto-dismiss alerts with slide animation
+ * - Character counters for title & content fields
  * - Navbar scroll effect (glass morphism on scroll)
  * - Smooth scroll behavior
- * - Confirmation dialogs
+ * - CSRF-aware delete confirmation modal
  * - Textarea auto-resize
  * - Intersection Observer for scroll animations
- * - CSRF-aware delete confirmation
+ * - Logged-out alert display
  */
 
 // Wait for DOM to be fully loaded
@@ -48,19 +48,56 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ============================================================
-    // 3. Enhanced Password Validation (Strength & Match)
+    // 3. Loading Spinner on Form Submissions
+    // ============================================================
+    // Listen on form submit instead of button click to ensure
+    // client-side validation (Bootstrap's checkValidity) runs first
+    document.querySelectorAll('form').forEach(function (form) {
+        form.addEventListener('submit', function () {
+            // If form has Bootstrap validation and it's not valid, skip
+            if (form.classList.contains('was-validated') && !form.checkValidity()) {
+                return;
+            }
+            
+            // Find the submit button
+            const button = form.querySelector('button[type="submit"]');
+            if (!button || button.disabled) return;
+            
+            // Save original content
+            if (!button.dataset.originalHtml) {
+                button.dataset.originalHtml = button.innerHTML;
+            }
+            
+            // Add loading state
+            button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Loading...';
+            button.disabled = true;
+
+            // Safety net: re-enable after 30 seconds
+            setTimeout(function () {
+                if (button.disabled) {
+                    button.innerHTML = button.dataset.originalHtml || 'Submit';
+                    button.disabled = false;
+                }
+            }, 30000);
+        });
+    });
+
+    // ============================================================
+    // 4. Enhanced Password Validation (Strength & Match)
     // ============================================================
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', function (e) {
             const password = document.getElementById('password');
             const confirm = document.getElementById('confirm_password');
+            let hasError = false;
 
             // Check password match
             if (password && confirm && password.value !== confirm.value) {
                 e.preventDefault();
                 confirm.setCustomValidity('Passwords do not match.');
                 confirm.reportValidity();
+                hasError = true;
                 return false;
             } else if (confirm) {
                 confirm.setCustomValidity('');
@@ -68,35 +105,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Check password strength via client-side regex
             if (password && password.value.length < 8) {
-                e.preventDefault();
+                if (!hasError) { e.preventDefault(); }
                 password.setCustomValidity('Password must be at least 8 characters.');
                 password.reportValidity();
                 return false;
             }
             
             if (password && !/(?=.*[a-z])/.test(password.value)) {
-                e.preventDefault();
+                if (!hasError) { e.preventDefault(); }
                 password.setCustomValidity('Password must contain a lowercase letter.');
                 password.reportValidity();
                 return false;
             }
             
             if (password && !/(?=.*[A-Z])/.test(password.value)) {
-                e.preventDefault();
+                if (!hasError) { e.preventDefault(); }
                 password.setCustomValidity('Password must contain an uppercase letter.');
                 password.reportValidity();
                 return false;
             }
             
             if (password && !/(?=.*\d)/.test(password.value)) {
-                e.preventDefault();
+                if (!hasError) { e.preventDefault(); }
                 password.setCustomValidity('Password must contain a number.');
                 password.reportValidity();
                 return false;
             }
             
             if (password && !/(?=.*[^A-Za-z0-9])/.test(password.value)) {
-                e.preventDefault();
+                if (!hasError) { e.preventDefault(); }
                 password.setCustomValidity('Password must contain a special character.');
                 password.reportValidity();
                 return false;
@@ -185,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ============================================================
-    // 4. Create/Edit Post Validation Enhancement
+    // 5. Create/Edit Post Validation Enhancement
     // ============================================================
     const postForms = ['createPostForm', 'editPostForm'];
     postForms.forEach(function (formId) {
@@ -217,7 +254,38 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ============================================================
-    // 5. Auto-Dismiss Alerts with Animation
+    // 6. Character Counters for Title & Content
+    // ============================================================
+    function setupCharacterCounter(inputId, counterId, maxChars) {
+        const input = document.getElementById(inputId);
+        const counter = document.getElementById(counterId);
+        if (!input || !counter) return;
+
+        function updateCounter() {
+            const len = input.value.length;
+            counter.textContent = len + ' / ' + maxChars;
+            
+            if (len > maxChars * 0.9) {
+                counter.style.color = '#ef4444';
+                counter.style.fontWeight = '600';
+            } else if (len > maxChars * 0.75) {
+                counter.style.color = '#f59e0b';
+                counter.style.fontWeight = '500';
+            } else {
+                counter.style.color = '#9ca3af';
+                counter.style.fontWeight = '400';
+            }
+        }
+
+        input.addEventListener('input', updateCounter);
+        updateCounter(); // Initial update
+    }
+
+    setupCharacterCounter('title', 'titleCounter', 255);
+    setupCharacterCounter('content', 'contentCounter', 100000);
+
+    // ============================================================
+    // 7. Auto-Dismiss Alerts with Animation
     // ============================================================
     const alerts = document.querySelectorAll('.alert-dismissible');
     alerts.forEach(function (alert) {
@@ -227,6 +295,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert.style.opacity = '0';
                 alert.style.transform = 'translateY(-10px)';
                 setTimeout(function () {
+                    // Use Bootstrap alert if available
                     const bsAlert = bootstrap.Alert.getInstance(alert);
                     if (bsAlert) {
                         bsAlert.close();
@@ -239,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ============================================================
-    // 6. Smooth Scroll for Anchor Links
+    // 8. Smooth Scroll for Anchor Links
     // ============================================================
     document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
         anchor.addEventListener('click', function (e) {
@@ -258,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ============================================================
-    // 7. Search Input - Escape Key & Clear Button
+    // 9. Search Input - Escape Key & Clear Button
     // ============================================================
     const searchInput = document.querySelector('input[name="search"]');
     if (searchInput) {
@@ -276,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ============================================================
-    // 8. Tooltip Initialization
+    // 10. Tooltip Initialization
     // ============================================================
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (el) {
@@ -284,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ============================================================
-    // 9. Textarea Auto-Resize
+    // 11. Textarea Auto-Resize
     // ============================================================
     const textareas = document.querySelectorAll('textarea');
     textareas.forEach(function (textarea) {
@@ -301,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ============================================================
-    // 10. Scroll-triggered Animations (via IntersectionObserver)
+    // 12. Scroll-triggered Animations (via IntersectionObserver)
     // ============================================================
     if ('IntersectionObserver' in window) {
         const animElements = document.querySelectorAll('.animate-fade-in-up, .stagger-1, .stagger-2, .stagger-3, .stagger-4, .stagger-5, .stagger-6');
@@ -327,12 +396,75 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ============================================================
-    // 11. Cross-site Request Forgery (CSRF) Logout Protection
+    // 13. Toast Notification System
     // ============================================================
-    // The logout link now includes a CSRF token in the URL.
-    // The confirm dialog adds an extra layer of protection.
+    const toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+        // Create toast container if it doesn't exist
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
+    }
 
-    console.log('BlogCRUD Security Enhanced UI initialized successfully! 🔒');
+    /**
+     * Show a Bootstrap toast notification
+     * @param {string} message - The message to display
+     * @param {string} type - 'success', 'error', 'warning', 'info'
+     */
+    window.showToast = function (message, type) {
+        type = type || 'info';
+        const container = document.getElementById('toastContainer');
+        
+        const iconMap = {
+            'success': 'bi-check-circle-fill text-success',
+            'error': 'bi-exclamation-triangle-fill text-danger',
+            'warning': 'bi-exclamation-circle-fill text-warning',
+            'info': 'bi-info-circle-fill text-primary'
+        };
+        
+        const bgMap = {
+            'success': 'border-success',
+            'error': 'border-danger',
+            'warning': 'border-warning',
+            'info': 'border-primary'
+        };
+        
+        const icon = iconMap[type] || iconMap['info'];
+        const border = bgMap[type] || bgMap['info'];
+        
+        const toastEl = document.createElement('div');
+        toastEl.className = 'toast align-items-center border-0 ' + border;
+        toastEl.setAttribute('role', 'alert');
+        toastEl.setAttribute('aria-live', 'assertive');
+        toastEl.setAttribute('aria-atomic', 'true');
+        toastEl.style.borderLeft = '4px solid';
+        toastEl.innerHTML = '<div class="d-flex">' +
+            '<div class="toast-body d-flex align-items-center gap-2">' +
+                '<i class="bi ' + icon + ' fs-5"></i>' +
+                '<span>' + message + '</span>' +
+            '</div>' +
+            '<button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>' +
+        '</div>';
+        
+        container.appendChild(toastEl);
+        
+        const toast = new bootstrap.Toast(toastEl, {
+            animation: true,
+            autohide: true,
+            delay: 4000
+        });
+        
+        toast.show();
+        
+        // Remove from DOM after hidden
+        toastEl.addEventListener('hidden.bs.toast', function () {
+            toastEl.remove();
+        });
+    };
+
+    console.log('BlogCRUD Final UI initialized successfully! 🚀');
 });
 
 // ============================================================

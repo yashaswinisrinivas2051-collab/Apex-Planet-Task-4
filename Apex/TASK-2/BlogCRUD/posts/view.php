@@ -208,8 +208,8 @@ include '../includes/navbar.php';
                 <i class="bi bi-search search-icon"></i>
                 <?php if (!empty($search)): ?>
                     <a href="/posts/view.php" 
-                       class="btn btn-outline-secondary rounded-pill position-absolute end-0 top-50 translate-middle-y me-1 border-0"
-                       title="Clear search" style="z-index: 6;">
+                       class="search-clear-btn"
+                       title="Clear search">
                         <i class="bi bi-x-lg"></i>
                     </a>
                 <?php endif; ?>

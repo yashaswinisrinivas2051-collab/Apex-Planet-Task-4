@@ -124,7 +124,10 @@ include '../includes/navbar.php';
                             <input type="text" class="form-control form-control-lg rounded-4" id="title" 
                                    name="title" placeholder="Enter a captivating title for your post (min 5 chars)..." 
                                    value="<?php echo htmlspecialchars($title); ?>" minlength="5" maxlength="255" required>
-                            <div class="invalid-feedback">Title must be between 5 and 255 characters.</div>
+                            <div class="d-flex justify-content-between">
+                                <div class="invalid-feedback">Title must be between 5 and 255 characters.</div>
+                                <small id="titleCounter" class="text-muted">0 / 255</small>
+                            </div>
                         </div>
 
                         <!-- Content -->
@@ -136,7 +139,10 @@ include '../includes/navbar.php';
                                       rows="12" placeholder="Write your blog post content here... (min 20 characters)" 
                                       minlength="20"
                                       required><?php echo htmlspecialchars($content); ?></textarea>
-                            <div class="invalid-feedback">Content must be at least 20 characters long.</div>
+                            <div class="d-flex justify-content-between">
+                                <div class="invalid-feedback">Content must be at least 20 characters long.</div>
+                                <small id="contentCounter" class="text-muted">0</small>
+                            </div>
                         </div>
 
                         <!-- Action Buttons -->

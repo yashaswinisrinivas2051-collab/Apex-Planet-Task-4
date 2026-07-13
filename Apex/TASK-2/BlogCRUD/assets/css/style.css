@@ -1077,6 +1077,7 @@ footer::before {
 
 .search-bar .form-control {
     padding-left: 2.75rem;
+    padding-right: 2.75rem;
     border-radius: var(--radius-full);
     border: 2px solid var(--gray-200);
     background: white;
@@ -1087,6 +1088,7 @@ footer::before {
     border-color: var(--orange-400);
     box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
     padding-left: 2.75rem;
+    padding-right: 2.75rem;
 }
 
 .search-bar .search-icon {
@@ -1102,6 +1104,27 @@ footer::before {
 
 .search-bar .form-control:focus ~ .search-icon {
     color: var(--orange-500);
+}
+
+/* Search clear button positioning */
+.search-bar .search-clear-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 6;
+    background: transparent;
+    border: none;
+    color: var(--gray-400);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-full);
+    transition: var(--transition-base);
+}
+
+.search-bar .search-clear-btn:hover {
+    color: var(--gray-600);
+    background: var(--gray-100);
 }
 
 /* ============================================================
